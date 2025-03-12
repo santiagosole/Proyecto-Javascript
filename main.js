@@ -1,4 +1,7 @@
-function simuladorCompra() {
+
+// PRIMER PRE ENTREGA//
+
+/*function simuladorCompra() {
     let costo = parseFloat(prompt("Ingrese el costo de la mercadería ($):"));
     let precioVenta = parseFloat(prompt("Ingrese el precio de venta ($):"));
 
@@ -29,5 +32,19 @@ function calcularMargen(costo, precioVenta) {
     return ((precioVenta - costo) / costo) * 100;
 }
 
-simuladorCompra();
+simuladorCompra();*/    
+
+
+class Producto {
+    constructor(nombre, costo, precioVenta) {
+        this.nombre = nombre;
+        this.costo = costo;
+        this.precioVenta = precioVenta;
+        this.margen = this.calcularMargen();
+    }
+    
+    calcularMargen() {
+        return ((this.precioVenta - this.costo) / this.costo) * 100;
+    }
+}
 
