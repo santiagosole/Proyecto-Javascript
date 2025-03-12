@@ -79,3 +79,15 @@ function simuladorCompra() {
     
     mostrarProductos();
 }
+
+function mostrarProductos() {
+    console.log("Lista de productos ingresados:");
+    productos.forEach(producto => {
+        console.log(`${producto.nombre}: Costo $${producto.costo}, Precio de venta $${producto.precioVenta}, Margen ${producto.margen.toFixed(2)}%`);
+    });
+
+    let productosBajoMargen = productos.filter(prod => prod.margen < 25);
+    console.log("Productos con margen bajo:", productosBajoMargen);
+}
+
+simuladorCompra();
