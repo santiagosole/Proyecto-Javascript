@@ -48,3 +48,34 @@ class Producto {
     }
 }
 
+let productos = [];
+
+function simuladorCompra() {
+    let continuar = true;
+    
+    while (continuar) {
+        let nombre = prompt("Ingrese el nombre del producto:");
+        let costo = parseFloat(prompt("Ingrese el costo de la mercadería ($):"));
+        let precioVenta = parseFloat(prompt("Ingrese el precio de venta ($):"));
+
+        if (isNaN(costo) || isNaN(precioVenta) || costo <= 0 || precioVenta <= 0 || !nombre) {
+            alert("Por favor, ingrese valores válidos.");
+            continue;
+        }
+        
+        let producto = new Producto(nombre, costo, precioVenta);
+        productos.push(producto);
+        
+        alert(`Producto agregado: ${producto.nombre}\nMargen de ganancia: ${producto.margen.toFixed(2)}%`);
+
+        if (producto.margen >= 25) {
+            alert("El margen de ganancia es correcto.");
+        } else {
+            alert("El margen de ganancia es bajo, considere ajustar el precio.");
+        }
+        
+        continuar = confirm("¿Desea ingresar otro producto?");
+    }
+    
+    mostrarProductos();
+}
