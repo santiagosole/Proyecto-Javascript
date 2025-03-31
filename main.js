@@ -1,95 +1,90 @@
-
-// PRIMER PRE ENTREGA//
-
-/*function simuladorCompra() {
-    let costo = parseFloat(prompt("Ingrese el costo de la mercadería ($):"));
-    let precioVenta = parseFloat(prompt("Ingrese el precio de venta ($):"));
-
-    if (isNaN(costo) || isNaN(precioVenta) || costo <= 0 || precioVenta <= 0) {
-        console.log("Error: Datos ingresados no válidos.");
-        alert("Por favor, ingrese valores válidos.");
-        return;
-    }
-    
-    let margen = calcularMargen(costo, precioVenta);
-    
-    console.log(`Costo: $${costo}`);
-    console.log(`Precio de venta: $${precioVenta}`);
-    console.log(`Margen de ganancia calculado: ${margen.toFixed(2)}%`);
-    
-    alert(`Margen de ganancia: ${margen.toFixed(2)}%`);
-    
-    if (margen >= 25) {
-        console.log("El margen de ganancia es correcto.");
-        alert("El margen de ganancia es correcto.");
-    } else {
-        console.log("El margen de ganancia es bajo, considere ajustar el precio.");
-        alert("El margen de ganancia es bajo, considere ajustar el precio.");
-    }
-}
-
-function calcularMargen(costo, precioVenta) {
-    return ((precioVenta - costo) / costo) * 100;
-}
-
-simuladorCompra();*/
-
-
-const baseDeDatosProductos = [
-    { nombre: "Mouse", precio: 20000, stock: 15 },
-    { nombre: "Teclado", precio: 15000, stock: 10 },
-    { nombre: "Monitor", precio: 80000, stock: 8 },
-    { nombre: "Parlante", precio: 25000, stock: 20 },
-    { nombre: "Celular", precio: 120000, stock: 30 }
+let baseDeDatosProductos = JSON.parse(localStorage.getItem("productos")) || [
+    { nombre: "Mouse", stock: 15 },
+    { nombre: "Teclado", stock: 10 },
+    { nombre: "Monitor", stock: 8 },
+    { nombre: "Parlante", stock: 20 },
+    { nombre: "Celular", stock: 30 }
 ];
 
-let listaProductos = [];
+function mostrarProductos() {
+    const listaProductos = document.getElementById("productoLista");
+    listaProductos.innerHTML = ''; 
 
-function agregarProducto() {
-    let nombre;
-    do {
-        nombre = prompt("Ingresa el nombre del producto").trim();
-        if (!/^[a-zA-Z\s]+$/.test(nombre)) {
-            alert("Error: Ingresa solo letras en el nombre del producto.");
-        }
-    } while (!/^[a-zA-Z\s]+$/.test(nombre));
+    baseDeDatosProductos.forEach((producto) => {
+        let nombreProducto = producto.nombre.charAt(0).toUpperCase() + producto.nombre.slice(1);
 
-    let precioCompra;
-    do {
-        precioCompra = parseFloat(prompt("Ingresa el precio de compra del producto"));
-        if (isNaN(precioCompra) || precioCompra <= 0) {
-            alert("Error: Ingresa un precio de compra válido (solo números mayores a 0).");
-        }
-    } while (isNaN(precioCompra) || precioCompra <= 0);
+        const productoDiv = document.createElement("div");
+        productoDiv.textContent = `${nombreProducto} - Stock: ${producto.stock}`;
+        listaProductos.appendChild(productoDiv);
+    });
+}
 
-    let precioVenta;
-    do {
-        precioVenta = parseFloat(prompt("Ingresa el precio de venta del producto"));
-        if (isNaN(precioVenta) || precioVenta <= 0) {
-            alert("Error: Ingresa un precio de venta válido (solo números mayores a 0).");
-        }
-    } while (isNaN(precioVenta) || precioVenta <= 0);
+function agregarProducto(e) {
+    e.preventDefault();
 
-    let productoBase = baseDeDatosProductos.find(p => p.nombre.toLowerCase() === nombre.toLowerCase());
+    let nombre = document.getElementById("nombre").value.trim();
+    let precioCompra = parseFloat(document.getElementById("precioCompra").value);
+    let precioVenta = parseFloat(document.getElementById("precioVenta").value);
+    let cantidadStock = parseInt(document.getElementById("cantidadStock").value);
+
+    nombre = nombre.charAt(0).toUpperCase() + nombre.slice(1);
+
+    if (!/^[a-zA-Z\s]+$/.test(nombre)) {
+        alert("Error: El nombre del producto solo debe contener letras.");
+        return;
+    }
+
+    if (isNaN(precioCompra) || precioCompra <= 0 || isNaN(precioVenta) || precioVenta <= 0 || isNaN(cantidadStock) || cantidadStock <= 0) {
+        alert("Error: Los valores deben ser números válidos mayores a 0.");
+        return;
+    }
 
     let margen = ((precioVenta - precioCompra) / precioCompra) * 100;
 
-    if (productoBase) {
+    let productoExistente = baseDeDatosProductos.find((producto) => producto.nombre.toLowerCase() === nombre.toLowerCase());
+
+    if (productoExistente) {
         if (margen >= 25) {
-            alert("El producto ya existe en la base de datos y supera el margen requerido.");
+            productoExistente.stock += cantidadStock;
+            alert("El producto ya existe y se ha actualizado su cantidad en la base de datos.");
         } else {
-            alert("El producto existe en la base de datos pero debes subir el precio para que supere el margen del 25%.");
+            alert("El producto existe pero no cumple con el margen de ganancia del 25%.");
         }
     } else {
         if (margen >= 25) {
-            baseDeDatosProductos.push({ nombre, precio: precioCompra, stock: 1 });
-            alert("El producto no estaba en la base, pero supera el margen y ha sido agregado.");
+            baseDeDatosProductos.push({ nombre, stock: cantidadStock }); 
+            alert("Nuevo producto agregado a la base de datos.");
         } else {
-            alert("El producto no está en la base de datos. Si subes el precio, podría sumarse.");
+            alert("El producto no cumple con el margen de ganancia del 25%.");
         }
     }
 
-    console.table(baseDeDatosProductos);
+    localStorage.setItem("productos", JSON.stringify(baseDeDatosProductos));
+
+    mostrarProductos(); 
 }
 
-agregarProducto();
+function eliminarProducto(e) {
+    e.preventDefault();
+
+    let nombreEliminar = document.getElementById("nombreEliminar").value.trim();
+    nombreEliminar = nombreEliminar.charAt(0).toUpperCase() + nombreEliminar.slice(1);
+
+    let index = baseDeDatosProductos.findIndex((producto) => producto.nombre === nombreEliminar);
+
+    if (index !== -1) {
+        baseDeDatosProductos.splice(index, 1);
+        alert(`El producto "${nombreEliminar}" ha sido eliminado de la base de datos.`);
+
+        localStorage.setItem("productos", JSON.stringify(baseDeDatosProductos));
+
+        mostrarProductos();
+    } else {
+        alert("El producto no se encontró en la base de datos.");
+    }
+}
+
+document.getElementById("formAgregarProducto").addEventListener("submit", agregarProducto);
+document.getElementById("formEliminarProducto").addEventListener("submit", eliminarProducto);
+
+mostrarProductos();
