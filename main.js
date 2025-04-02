@@ -50,14 +50,14 @@ function agregarProducto(e) {
 
     if (productoExistente) {
         if (margen >= 25) {
-            productoExistente.stock += cantidadStock; 
+            productoExistente.stock += cantidadStock;
             Swal.fire("✅ Actualizado", "El producto ya existía y se actualizó el stock.", "success");
         } else {
             Swal.fire("⚠️ Advertencia", "El producto no cumple con el margen mínimo del 25%.", "warning");
         }
     } else {
         if (margen >= 25) {
-            baseDeDatosProductos.push({ nombre, stock: cantidadStock }); 
+            baseDeDatosProductos.push({ nombre, stock: cantidadStock });
             Swal.fire("🎉 Producto Agregado", "Nuevo producto agregado al inventario.", "success");
         } else {
             Swal.fire("⚠️ Advertencia", "El producto no cumple con el margen mínimo del 25%.", "warning");
@@ -65,7 +65,7 @@ function agregarProducto(e) {
     }
 
     localStorage.setItem("productos", JSON.stringify(baseDeDatosProductos));
-    mostrarProductos(); 
+    mostrarProductos();
     document.getElementById("formAgregarProducto").reset();
 }
 
