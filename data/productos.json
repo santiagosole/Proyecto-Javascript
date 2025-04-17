@@ -1,0 +1,8 @@
+[
+    { "nombre": "Mouse",   "stock": 15 },
+    { "nombre": "Teclado", "stock": 10 },
+    { "nombre": "Monitor", "stock": 8  },
+    { "nombre": "Parlante","stock": 20 },
+    { "nombre": "Celular", "stock": 30 }
+  ]
+  
